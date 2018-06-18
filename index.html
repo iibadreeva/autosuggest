@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title>Тестовое задание</title>
+	<link rel="stylesheet" type="text/css" href="css/main.css">	
+</head>
+<body>
+<form>
+	<div id="container" class="container" >
+		<div class="input-wrap">
+			<input class="required-hide" id="fulter-input" type="text" placeholder="Search here" autocomplete="off" required>
+			<ul id="autocomplete-result" class="autocomplete-result"></ul>
+		</div>
+		
+		<div class="input-wrap">
+			<input id="phone" type="tel" name="phone" required pattern="^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$" title="+7(903)888-88-88" >
+		</div>
+		
+		<button id="save-button">cохранить</button>
+		<button type="reset" id="clean-button">oчистить</button>		
+	</div>
+
+	<script type="text/javascript" src="js/main.js"></script>
+</form>
+</body>
+</html>
