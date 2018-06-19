@@ -3,7 +3,6 @@
 let fulterInput = document.getElementById('fulter-input'),
     results = document.getElementById('autocomplete-result'),
     phone = document.getElementById('phone'),
-    getAjax = get(),
     data = {},
     matches = [],
     cursorIndex = 0,
@@ -44,6 +43,8 @@ document.addEventListener("click", function (e) {
 });
 
 fulterInput.addEventListener('keydown', function(event){
+    get('js/main.json').then((value) => { data = JSON.parse(value) });
+
     if(event.keyCode == "13"){
         event.preventDefault();
     }
@@ -52,19 +53,8 @@ fulterInput.addEventListener('keydown', function(event){
 // Поиск адрессов
 fulterInput.addEventListener('keyup', function(event){
     results.innerHTML = '';
-    toggleResults('hide');
+    toggleResults('hide');    
 
-    // var xhr = new XMLHttpRequest();
-    // console.log(xhr);
-    // xhr.open('GET', 'js/main.txt');
-    // xhr.send();
-    // xhr.addEventListener('load', () => {
-    //     getAjax = xhr.responseText;
-    //     console.log(xhr.responseText)
-    // });
-
-//     getAjax = get();
-// console.log('getAjax',get );
     if(this.value.length > 0){
         matches = getMatches(this.value);
 
@@ -108,19 +98,22 @@ function toggleResults(action){
 }
 
 function getMatches(inputText){
-    let matchList = [],
-        item;
-    for(let item of data){
-    // for(let key in data){
-    //  item = data[key];
-        /*if( item.url.toLowerCase().indexOf( inputText.toLowerCase() ) != -1 ){
-            matchList.push( item.url );
-        }*/
-        if (item.url.substr(0, inputText.length).toUpperCase() == inputText.toUpperCase()) {
-            matchList.push( item.url );
+    let matchList = [];
+    try{
+        if(!data || Object.keys(data).length === 0)
+            throw new Eroor('Данных нет');
+
+        for(let item of data){
+            /*if( item.url.toLowerCase().indexOf( inputText.toLowerCase() ) != -1 ){ }*/
+            if (item.url.substr(0, inputText.length).toUpperCase() == inputText.toUpperCase()) {
+                matchList.push( item.url );
+            }
         }
 
+    }catch(e){
+        console.error(e.message)
     }
+    
 
     return matchList;
 }
@@ -173,20 +166,14 @@ function clearLocalStorage(){
     localStorage.clear();
 }
 
-function get(){
-    let xhr = new XMLHttpRequest(),
-        url = 'js/main.json';
 
-    xhr.open('GET', url);
-    xhr.send();
-
-    xhr.addEventListener('load', () => {
-        if (xhr.status != 200) {
-          console.log( xhr.status + ': ' + xhr.statusText ); // пример вывода: 404: Not Found
-        } else {
-            data = JSON.parse(xhr.responseText)
-        }
-    });
-
-    
+function get(url) {
+    return new Promise((resolve) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url);
+        xhr.send();
+        xhr.addEventListener('load', () => {
+            resolve(xhr.responseText);
+         });
+    })
 }
