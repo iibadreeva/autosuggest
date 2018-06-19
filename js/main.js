@@ -4,7 +4,7 @@ let fulterInput = document.getElementById('fulter-input'),
     results = document.getElementById('autocomplete-result'),
     phone = document.getElementById('phone'),
     getAjax = get(),
-    data = JSON.parse(getAjax),
+    data = {},
     matches = [],
     cursorIndex = 0,
     saveButton = document.getElementById('save-button'),
@@ -54,6 +54,17 @@ fulterInput.addEventListener('keyup', function(event){
     results.innerHTML = '';
     toggleResults('hide');
 
+    // var xhr = new XMLHttpRequest();
+    // console.log(xhr);
+    // xhr.open('GET', 'js/main.txt');
+    // xhr.send();
+    // xhr.addEventListener('load', () => {
+    //     getAjax = xhr.responseText;
+    //     console.log(xhr.responseText)
+    // });
+
+//     getAjax = get();
+// console.log('getAjax',get );
     if(this.value.length > 0){
         matches = getMatches(this.value);
 
@@ -98,11 +109,10 @@ function toggleResults(action){
 
 function getMatches(inputText){
     let matchList = [],
-    	item;
-
+        item;
     for(let item of data){
     // for(let key in data){
-    // 	item = data[key];
+    //  item = data[key];
         /*if( item.url.toLowerCase().indexOf( inputText.toLowerCase() ) != -1 ){
             matchList.push( item.url );
         }*/
@@ -165,14 +175,18 @@ function clearLocalStorage(){
 
 function get(){
     let xhr = new XMLHttpRequest(),
-        url = location.protocol + '//' + location.host + '/task1/js/main.json';
+        url = 'js/main.json';
 
-    xhr.open('GET', url, false);
+    xhr.open('GET', url);
     xhr.send();
 
-    if (xhr.status != 200) {
-      console.log( xhr.status + ': ' + xhr.statusText ); // пример вывода: 404: Not Found
-    } else {
-      return xhr.responseText;
-    }
+    xhr.addEventListener('load', () => {
+        if (xhr.status != 200) {
+          console.log( xhr.status + ': ' + xhr.statusText ); // пример вывода: 404: Not Found
+        } else {
+            data = JSON.parse(xhr.responseText)
+        }
+    });
+
+    
 }
