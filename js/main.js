@@ -43,7 +43,9 @@ document.addEventListener("click", function (e) {
 });
 
 fulterInput.addEventListener('keydown', function(event){
-    get('js/main.json').then((value) => { data = JSON.parse(value) });
+    get('js/main.json')
+        .then((value) => { data = JSON.parse(value) })
+        .catch(() => { console.error('something wrong'); });
 
     if(event.keyCode == "13"){
         event.preventDefault();
@@ -168,12 +170,15 @@ function clearLocalStorage(){
 
 
 function get(url) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.open('GET', url);
+        xhr.open('POST', url);
         xhr.send();
         xhr.addEventListener('load', () => {
-            resolve(xhr.responseText);
+            if(xhr.status != 200)
+               reject();
+           else
+               resolve(xhr.responseText);
          });
     })
 }
